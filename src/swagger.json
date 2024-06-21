@@ -1,0 +1,243 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API de uma aplicação VUTTR (Very Useful Tools to Remember)",
+    "description": "A aplicação é um simples repositório para gerenciar ferramentas com seus respectivos nomes, links, descrições e tags.",
+    "termsOfService": "http://localhost:3000/terms",
+    "contact": {
+      "email": "009rodrigo009@gmail.com"
+    }
+  },
+  "version": "1.0.0",
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "API desenvolvimento"
+    }
+  ],
+  "paths": {
+    "/tools": {
+      "post": {
+        "summary": "Cadastro de ferramenta",
+        "description": "Rota responsável por cadastrar nova ferramenta",
+        "tags": ["Tools"],
+                "security": [
+                  {
+                    "bearerAuth": []
+                  }
+                ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tool"
+              },
+              "examples": {
+                "tool": {
+                  "value": {
+                    "title": "Notion",
+                    "link": "www.notion.com",
+                    "description": "All in one productivity",
+                    "tags": ["productivity", "calendar"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "400": {
+            "description": "Tool already Exists!"
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Tool"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Listar ferramentas",
+        "description": "Rota responsável por listar ferramentas",
+        "tags": [
+          "Tools"
+        ],
+        "parameters": [],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "400": {
+            "description": "Tool already Exists!"
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Tool"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/tools/byTag": {
+      "get": {
+        "summary": "Listar ferramentas com determinada tag",
+        "description": "Listar ferramentas com determinada tag",
+        "tags": ["Tools"],
+        "parameters": [
+          {
+            "name": "tag", 
+            "in": "query",
+            "description": "nome da tag para busca",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Tool"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/{id}": {
+      "delete": {
+        "summary": "Deletar ferramenta pelo seu ID",
+        "description": "Deletar ferramenta pelo seu ID",
+        "tags": [ 
+          "Tools"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da ferramenta",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "summary": "Atualizar ferramenta pelo seu ID",
+        "description": "Deletar ferramenta pelo seu ID",
+        "tags": [
+          "Tools"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da ferramenta",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Tool"
+              },
+              "examples": {
+                "tool": {
+                  "value": {
+                    "title": "Notion",
+                    "link": "www.notion.com",
+                    "description": "All in one productivity",
+                    "tags": [
+                      "productivity",
+                      "calendar"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/tools/byTitle/": {
+      "get": {
+        "summary": "Listar ferramenta pelo título",
+        "description": "Listar ferramenta pelo título",
+        "tags": [
+          "Tools"
+        ],
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "description": "Nome da ferramenta pelo título",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Tool"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Tool": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "link": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array"
+          }
+        }
+      }
+    }
+  }
+}

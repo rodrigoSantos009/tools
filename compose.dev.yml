@@ -1,0 +1,28 @@
+services:
+  api:
+    build:
+      context: .
+      target: build
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - 3000:3000
+    depends_on:
+      - pg_db
+    environment:
+      - DATABASE_URL=postgresql://user:password@pg_db:5432/toolsdb?schema=public
+
+    command: npm run dev  
+  pg_db:
+    image: bitnami/postgresql:latest
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: toolsdb
+    volumes:
+      - 'tools_pg_data:/bitnami/postgresql'
+volumes:
+  tools_pg_data:
