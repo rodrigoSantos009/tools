@@ -3,48 +3,22 @@ import cors from "cors";
 
 import toolsRoutes from "./services/Tools";
 
-
 import swaggerUi from "swagger-ui-express";
 import swaggerDocs from "./swagger.json";
+import { errorMiddleware } from "./middlewares/error";
 
-class App {
-  private app: Application;
+export const app: Application = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-  constructor() {
-    this.app = express();
-    this.middlewares();
-    this.termsOfService();
-    this.setupRoutes();
-    this.documentation();
-  }
+app.use(toolsRoutes.router);
+app.use(errorMiddleware);
 
-  private middlewares(): void {
-    this.app.use(cors());
-    this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: true }));
-  }
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-  listenServer() {
-    this.app.listen(3000, () => console.log("server running!"));
-  }
-
-  setupRoutes() {
-    this.app.use(toolsRoutes.router);
-  }
-
-  private termsOfService(): void {
-    this.app.get("/terms", (req, res) => {
-      return res.json({
-        message: "Termos de serviço"
-      });
-    });
-  }
-
-  private documentation(): void {
-    this.app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-  }
-}
-
-const app = new App();
-
-export { app };
+app.get("/terms", (req, res) => {
+  return res.json({
+    message: "Termos de serviço",
+  });
+});

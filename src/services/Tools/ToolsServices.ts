@@ -1,3 +1,4 @@
+import { BadRequestError } from "../../helpers/api-errors";
 import { Tool } from "../../entities/Tool";
 import { ICreate, IUpdate } from "../../interfaces/Tools/ToolsInterface";
 import { IToolsRepository } from "../../repositories/Tools/IToolsRepository";
@@ -9,7 +10,7 @@ export class ToolsServices {
     const findTool = await this.toolsRepository.getByTitle(title);
 
     if (findTool) {
-      throw new Error("Tools already exists!");
+      throw new Error("Ferrameta já existe!");
     }
 
     const tool = new Tool(title, link, description, tags);
@@ -22,10 +23,6 @@ export class ToolsServices {
   async getTools() {
     const findTools = await this.toolsRepository.getTools();
 
-    if (!findTools) {
-      throw new Error("There are no tools!");
-    }
-
     return findTools;
   }
 
@@ -33,7 +30,7 @@ export class ToolsServices {
     const findTool = await this.toolsRepository.getById(id);
 
     if (!findTool) {
-      throw new Error("Tool not found!");
+      throw new Error("Ferramenta não encontrada!");
     }
 
     if(data.tags) {
@@ -50,7 +47,7 @@ export class ToolsServices {
     const findTool = await this.toolsRepository.getByTitle(title);
 
     if (!findTool) {
-      throw new Error("There are no tools!");
+      throw new Error("Ferramenta não encontrada!");
     }
 
     return findTool;
@@ -60,7 +57,7 @@ export class ToolsServices {
     const findTool = await this.toolsRepository.getByTag(tag);
 
     if (!findTool) {
-      throw new Error("There are no tools!");
+      throw new Error("Ferramenta não encontrada!");
     }
 
     return findTool;
@@ -70,13 +67,19 @@ export class ToolsServices {
     const findTool = await this.toolsRepository.getById(id);
 
     if (!findTool) {
-      throw new Error("Tool not found!");
+      throw new Error("Ferramenta não encontrada!");
     }
 
     return findTool;
   }
 
   async removeById(id: string) {
+    const findTool = await this.toolsRepository.getById(id);
+
+    if (!findTool) {
+      throw new Error("Ferramenta não encontrada!");
+    }
+
     await this.toolsRepository.removeById(id);
   }
 }

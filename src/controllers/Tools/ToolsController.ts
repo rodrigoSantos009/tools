@@ -6,9 +6,9 @@ export class ToolsController {
 
   async handle(req: Request, res: Response): Promise<Response> {
     const { title, link, description, tags } = req.body;
-    
+
     try {
-      const tool = this.toolsServices.create({
+      const tool = await this.toolsServices.create({
         title,
         link,
         description,
@@ -17,36 +17,30 @@ export class ToolsController {
 
       return res.status(201).json(tool);
     } catch (error) {
-      return res.status(400).json(error);
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+      return res.status(400).json({ message: "Ocorreu um erro inesperado." });
     }
   }
 
   async getTools(req: Request, res: Response): Promise<Response> {
-    try {
-      const tools = await this.toolsServices.getTools();
-
-      return res.status(200).json(tools);
-    } catch (error) {
-      return res.status(400).json();
-    }
+    const tools = await this.toolsServices.getTools();
+    return res.status(200).json(tools);
   }
 
   async updateTool(req: Request, res: Response): Promise<Response> {
     const { id } = req.params;
     const data = req.body;
-    console.log(id, data);
     try {
-      await this.toolsServices.updateTool(id, data);
+      const tool = await this.toolsServices.updateTool(id, data);
 
-      return res.status(200).json({
-        status: "success",
-        message: "updated"
-      });
+      return res.status(200).json(tool);
     } catch (error) {
-      return res.status(500).json({
-        status: "faild",
-        message: error
-      });
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+      return res.status(500).json({ message: "Ocorreu um erro inesperado." });
     }
   }
 
@@ -55,10 +49,12 @@ export class ToolsController {
 
     try {
       const tool = await this.toolsServices.getByTitle(title);
-
       return res.status(200).json(tool);
     } catch (error) {
-      return res.status(400).json();
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+      return res.status(500).json({ message: "Ocorreu um erro inesperado." });
     }
   }
 
@@ -67,21 +63,26 @@ export class ToolsController {
 
     try {
       const tool = await this.toolsServices.getByTag(tag);
-
       return res.status(200).json(tool);
     } catch (error) {
-      return res.status(400).json();
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+      return res.status(500).json({ message: "Ocorreu um erro inesperado." });
     }
   }
 
   async getById(req: Request, res: Response): Promise<Response> {
     const { id } = req.params;
+
     try {
       const tool = await this.toolsServices.getById(id);
-
       return res.status(200).json(tool);
     } catch (error) {
-      return res.status(400).json();
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+      return res.status(500).json({ message: "Ocorreu um erro inesperado." });
     }
   }
 
@@ -89,11 +90,13 @@ export class ToolsController {
     const { id } = req.params;
 
     try {
-      await this.toolsServices.removeById(id);
-
-      return res.status(200).json();
+      const tool = await this.toolsServices.getById(id);
+      return res.status(200).json(tool);
     } catch (error) {
-      return res.status(400).json();
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+      return res.status(500).json({ message: "Ocorreu um erro inesperado." });
     }
   }
 }
